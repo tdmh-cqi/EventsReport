@@ -3,832 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDMH Events Report</title>
-    <!-- Chart.js for Analytics -->
+    <title>TDMH Professional Event Management</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --royal-blue: #0052cc;
-            --emerald-green: #10b981;
-            --sunflower-yellow: #facc15;
-            --primary: var(--royal-blue);
-            --primary-glow: rgba(0, 82, 204, 0.15);
-            --secondary: var(--emerald-green);
-            --danger: #f43f5e;
-            --warning: var(--sunflower-yellow);
-            --cqi: #7c3aed;
+            --brand: #0f172a;
+            --accent: #2563eb;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --surface: #ffffff;
             --bg: #f8fafc;
-            --card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
             --border: #e2e8f0;
-            --radius-lg: 1.25rem;
-            --radius-md: 0.75rem;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --radius: 0.75rem;
         }
 
+        * { box-sizing: border-box; }
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); 
-            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
             color: var(--text-main); 
-            line-height: 1.6;
-            min-height: 100vh;
+            margin: 0; 
+            line-height: 1.5;
         }
 
-        /* --- MODERN HEADER --- */
-        .header { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px);
-            padding: 1.25rem 2rem; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
+        h1, h2, h3, .brand-text { font-family: 'Lexend', sans-serif; }
+
+        /* UI Styling */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
         }
 
-        .brand { display: flex; align-items: center; gap: 1rem; }
-        .logo-box { 
-            background: linear-gradient(135deg, var(--royal-blue), var(--emerald-green)); 
-            width: 42px; height: 42px; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: 800; font-family: 'Outfit';
-            box-shadow: 0 4px 12px var(--primary-glow);
-        }
-        .header h2 { margin: 0; font-size: 1.25rem; font-family: 'Outfit'; letter-spacing: -0.02em; font-weight: 700; color: var(--royal-blue); }
+        .brand { display: flex; align-items: center; gap: 0.75rem; }
+        .logo { background: var(--accent); color: white; padding: 0.5rem 0.8rem; border-radius: 0.5rem; font-weight: 800; }
 
-        .container { max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem; padding-bottom: 6rem; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
 
-        /* --- VIBRANT TABS --- */
-        .nav-tabs { 
-            display: flex; gap: 0.75rem; background: rgba(255, 255, 255, 0.6); 
-            padding: 0.5rem; border-radius: 1rem; margin-bottom: 2.5rem; 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            overflow-x: auto;
-        }
-        .nav-btn { 
-            flex: 1; min-width: 140px; padding: 0.85rem; border: none; 
-            border-radius: 0.75rem; cursor: pointer; font-weight: 700; 
-            background: transparent; color: var(--text-muted); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-        .nav-btn svg { width: 18px; height: 18px; }
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.9); color: var(--royal-blue); }
-        .nav-btn.active { 
-            background: var(--royal-blue); color: white; 
-            box-shadow: 0 10px 20px -5px rgba(0, 82, 204, 0.3);
-            transform: translateY(-2px);
-        }
-        .nav-btn.cqi-active { background: var(--cqi); color: white; box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.3); }
+        .nav { display: flex; gap: 0.5rem; margin-bottom: 2rem; background: #f1f5f9; padding: 0.4rem; border-radius: 1rem; }
+        .nav-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; cursor: pointer; border-radius: 0.6rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: 0.2s; }
+        .nav-btn.active { background: white; color: var(--accent); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
 
-        /* --- PREMIUM CARDS --- */
-        .card { 
-            background: var(--card); 
-            border-radius: var(--radius-lg); 
-            padding: 2.25rem; 
-            box-shadow: 0 15px 35px -12px rgba(0,0,0,0.06); 
-            margin-bottom: 2rem; 
-            border: 1px solid rgba(255,255,255,0.8);
-        }
+        .card { background: var(--surface); border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); margin-bottom: 1.5rem; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
-        .stat-box { 
-            background: white; padding: 1.75rem; border-radius: var(--radius-md); 
-            border: 1px solid var(--border); text-align: left; position: relative;
-            overflow: hidden; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .stat-box:hover { transform: translateY(-8px); border-color: var(--royal-blue); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
-        .stat-box::after { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--royal-blue); }
-        .stat-box.pending::after { background: var(--sunflower-yellow); }
-        .stat-box.process::after { background: var(--royal-blue); }
-        .stat-box.closed::after { background: var(--emerald-green); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); }
+        .stat-val { font-size: 1.875rem; font-weight: 800; color: var(--brand); }
+        .stat-lab { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
 
-        .stat-value { font-size: 2.25rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit'; margin-bottom: 0.1rem; }
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--brand); }
+        input, select, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
 
-        /* --- TABLE STYLE --- */
-        .table-container { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .severity-pill { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .sev-low { background: #dcfce7; color: #166534; }
+        .sev-medium { background: #fef9c3; color: #854d0e; }
+        .sev-high { background: #fee2e2; color: #991b1b; }
+        .sev-sentinel { background: #1e293b; color: #f8fafc; }
+
+        .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: #f1f5f9; text-align: left; font-size: 0.7rem; color: #475569; padding: 1.25rem 1rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid var(--border); }
-        td { padding: 1.25rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); font-weight: 500; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f8fafc; }
+        th { background: #f8fafc; text-align: left; padding: 1rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 
-        /* --- MODERN FORM ELEMENTS --- */
-        .form-section-title { 
-            font-size: 1.2rem; font-weight: 800; color: var(--royal-blue); 
-            margin: 3rem 0 1.5rem 0; padding-bottom: 0.75rem; 
-            border-bottom: 3px solid #eef2ff; display: flex; align-items: center; gap: 1rem; 
-            font-family: 'Outfit';
-        }
-        .form-section-title span { background: var(--royal-blue); color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-        
-        label { display: block; margin-bottom: 0.6rem; font-weight: 700; font-size: 0.85rem; color: #334155; }
-        input, textarea, select { 
-            width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--border); 
-            border-radius: var(--radius-md); margin-bottom: 1.75rem; box-sizing: border-box; 
-            font-size: 1rem; font-family: inherit; transition: all 0.2s;
-            background: #fcfcfd; color: var(--text-main);
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--royal-blue); box-shadow: 0 0 0 5px var(--primary-glow); background: white; }
-        
-        /* --- BUTTONS --- */
-        .btn { 
-            padding: 1rem 2rem; border-radius: var(--radius-md); border: none; 
-            cursor: pointer; font-weight: 800; font-size: 0.95rem; 
-            display: inline-flex; align-items: center; justify-content: center; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); gap: 0.75rem; font-family: 'Outfit';
-            text-transform: uppercase; letter-spacing: 0.02em;
-        }
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--royal-blue), #1e40af); 
-            color: white; box-shadow: 0 8px 20px -6px rgba(0, 82, 204, 0.4); 
-        }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 25px -5px rgba(0, 82, 204, 0.5); }
-        .btn-outline { background: white; border: 2px solid var(--border); color: var(--text-muted); }
-        .btn-outline:hover { border-color: var(--royal-blue); color: var(--royal-blue); background: #f0f7ff; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border); }
 
-        /* --- SIGNATURES --- */
-        .sig-wrapper { 
-            border: 2px dashed #cbd5e1; border-radius: var(--radius-md); 
-            background: #fff; margin-bottom: 1.5rem; touch-action: none; overflow: hidden; 
-            transition: 0.2s;
-        }
-        .sig-wrapper:hover { border-color: var(--royal-blue); }
-        canvas.sig-pad { width: 100%; height: 180px; cursor: crosshair; }
+        .sig-box { border: 2px dashed var(--border); border-radius: var(--radius); background: #fafafa; overflow: hidden; position: relative; }
+        canvas { width: 100%; height: 150px; cursor: crosshair; touch-action: none; display: block; }
 
-        /* --- STATUS BADGES --- */
-        .status-badge { 
-            padding: 0.45rem 1.25rem; border-radius: 2rem; font-size: 0.7rem; 
-            font-weight: 800; text-transform: uppercase; white-space: nowrap; 
-            letter-spacing: 0.08em;
-        }
-        .status-badge.pending { background: #fefce8; color: #854d0e; border: 1px solid #fef08a; }
-        .status-badge.on-process { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-        .status-badge.closed { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .badge { padding: 0.3rem 0.8rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 700; border: 1px solid transparent; }
+        .status-pending { background: #fff7ed; color: #9a3412; border-color: #ffedd5; }
+        .status-on-process { background: #eff6ff; color: #1e40af; border-color: #dbeafe; }
+        .status-closed { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
 
-        /* --- OVERLAYS --- */
         .hidden { display: none !important; }
-        .overlay { 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); 
-            display: flex; align-items: center; justify-content: center; z-index: 1000; 
-        }
-        .modal { 
-            background: white; padding: 3rem; border-radius: 2rem; 
-            width: 90%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-            text-align: center;
-        }
 
-        /* --- SPECIAL UI SECTIONS --- */
-        .cqi-banner { 
-            background: linear-gradient(90deg, var(--cqi), var(--royal-blue)); 
-            color: white; padding: 1.25rem 2rem; border-radius: var(--radius-md); 
-            margin-bottom: 2.5rem; font-weight: 800; display: flex; align-items: center; gap: 1rem; 
-            box-shadow: 0 10px 25px -10px rgba(124, 58, 237, 0.5);
-            font-family: 'Outfit';
-        }
-        .audit-box { 
-            background: #0f172a; padding: 2.5rem; border-radius: var(--radius-lg); 
-            border: 1px solid #334155; margin-bottom: 3rem; 
-            box-shadow: 0 25px 30px -10px rgba(0,0,0,0.3); color: #fff;
-            text-align: center;
-        }
-        .audit-key { 
-            font-size: 3rem; font-weight: 900; color: var(--sunflower-yellow); 
-            letter-spacing: 0.25em; font-family: 'Outfit'; text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
-            margin: 1rem 0;
-        }
+        /* Report View Structure - Professional Print/OCD Alignment */
+        .report-section { border-top: 2px solid #334155; margin-top: 2rem; padding-top: 1rem; }
+        .report-header-text { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; margin-bottom: 1rem; }
+        .data-row { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid #f1f5f9; padding: 0.75rem 0; align-items: baseline; }
+        .data-label { font-weight: 600; font-size: 0.85rem; color: #64748b; }
+        .data-value { font-weight: 500; font-size: 0.95rem; color: #0f172a; }
 
-        .mgr-form-box { background: #f1f5f9; border-radius: var(--radius-lg); padding: 2.5rem; margin-top: 4rem; border: 2px solid var(--border); }
-        .analysis-card { 
-            background: #0f172a; color: white; border-radius: var(--radius-lg); padding: 2.5rem; 
-            display: flex; flex-direction: column; justify-content: space-between; 
-            border: 1px solid #334155;
-        }
-
-        .detail-row { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
-        .detail-label { font-weight: 800; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .detail-val { font-size: 1rem; color: var(--text-main); font-weight: 600; }
-
-        /* --- PRINT OCD ENGINE --- */
+        /* PRINT STYLES - Executive Grade */
         @media print {
-            body { background: white !important; font-family: 'Times New Roman', serif; color: black; }
-            .header, .nav-tabs, .btn, .mgr-form-box, .cqi-banner, .audit-box, .stats-grid, .grid-dash, h3, #sync-status { display: none !important; }
-            .container { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-            .card { border: none !important; box-shadow: none !important; padding: 0 !important; }
-            #print-header-brand { display: block !important; text-align: center; border-bottom: 3px solid #000; margin-bottom: 30px; padding-bottom: 10px; }
-            .form-section-title { background: #f0f0f0 !important; color: black !important; padding: 10px !important; border: 1px solid #000 !important; border-radius: 0 !important; }
-            .form-section-title span { background: black !important; }
-            .detail-row { grid-template-columns: 180px 1fr; border-color: #000 !important; }
-            .status-badge { border: 1px solid #000 !important; background: none !important; color: black !important; font-weight: bold; }
+            body { background: white; color: black; font-size: 10pt; }
+            .nav, .header, .btn, #sync-status, #modal-auth, #mgr-panel button { display: none !important; }
+            .container { max-width: 100%; margin: 0; padding: 0; }
+            .card { border: none; box-shadow: none; padding: 0; }
+            
+            #print-brand-header { display: block !important; border-bottom: 3px solid #000; padding-bottom: 1rem; margin-bottom: 2rem; text-align: center; }
+            #print-brand-header h1 { margin: 0; font-size: 24pt; letter-spacing: -1px; }
+            #print-brand-header p { margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; font-size: 10pt; }
+            
+            .report-section { border-top-color: #000; }
+            .data-row { border-bottom-color: #eee; }
+            .severity-pill { border: 1px solid #000; background: none !important; color: black !important; padding: 2px 8px; }
+            .badge { border: 1px solid #000; background: none !important; color: black !important; text-transform: uppercase; }
+            
+            .sig-box { border: 1px solid #eee; background: none; }
+            img { max-width: 250px; }
+
+            #print-footer { display: block !important; position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8pt; color: #999; border-top: 1px solid #eee; padding-top: 5px; }
         }
     </style>
 </head>
 <body>
 
-<div id="print-header-brand" style="display:none;">
-    <h1 style="margin:0; font-size: 28pt; color: #000;">TDMH</h1>
-    <h2 style="margin:0; font-size: 18pt; letter-spacing: 2px; text-transform: uppercase;">TDMH Events Report</h2>
-    <p style="margin:15px 0 0 0; font-size: 11pt; font-style: italic;">Official document generated via Digital Event Portal</p>
+<!-- Hidden Print Headers -->
+<div id="print-brand-header" class="hidden">
+    <h1>TDMH</h1>
+    <p>Official Institutional Event & Incident Record</p>
+    <div style="margin-top: 10px; font-size: 8pt; color: #666;">Generated on <span id="print-timestamp"></span></div>
 </div>
 
-<div class="header">
+<header class="header">
     <div class="brand">
-        <div class="logo-box">T</div>
-        <h2>TDMH Events Report</h2>
+        <div class="logo">TDMH</div>
+        <div class="brand-text" style="font-weight: 700; font-size: 1.2rem;">Quality & Safety Portal</div>
     </div>
-    <div id="sync-status">
-        <span class="loader"></span>
-        <span style="margin-left:8px;">Syncing Grid...</span>
+    <div id="sync-status" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">
+        Connecting...
     </div>
-</div>
+</header>
 
 <div class="container">
-    <div class="nav-tabs">
-        <button id="tab-dash" class="nav-btn active" onclick="showSection('section-dash')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-            Overview
-        </button>
-        <button id="tab-staff" class="nav-btn" onclick="showSection('section-staff')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-            File Report
-        </button>
-        <button id="tab-mgr" class="nav-btn" onclick="showSection('section-mgr')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-            Action Area
-        </button>
-        <button id="tab-cqi" class="nav-btn" onclick="promptCQI()">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            Archives
-        </button>
-    </div>
+    <nav class="nav">
+        <button id="nav-dash" class="nav-btn active" onclick="showSection('dash')">Overview</button>
+        <button id="nav-report" class="nav-btn" onclick="showSection('report')">New Incident</button>
+        <button id="nav-action" class="nav-btn" onclick="showSection('action')">Managerial Review</button>
+        <button id="nav-cqi" class="nav-btn" onclick="promptCQI()">Archive</button>
+    </nav>
 
-    <!-- DASHBOARD -->
+    <!-- OVERVIEW TAB -->
     <div id="section-dash">
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Events</div></div>
-            <div class="stat-box pending"><div class="stat-value" id="stat-pending" style="color:var(--royal-blue)">0</div><div class="stat-label">Pending</div></div>
-            <div class="stat-box process"><div class="stat-value" id="stat-process" style="color:var(--sunflower-yellow)">0</div><div class="stat-label">Active Investigation</div></div>
-            <div class="stat-box closed"><div class="stat-value" id="stat-closed" style="color:var(--emerald-green)">0</div><div class="stat-label">Resolved Cases</div></div>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-lab">Total Incidents</div><div class="stat-val" id="count-total">0</div></div>
+            <div class="stat-card"><div class="stat-lab">Unresolved</div><div class="stat-val" id="count-pending" style="color:var(--warning)">0</div></div>
+            <div class="stat-card"><div class="stat-lab">High Risk / Sentinel</div><div class="stat-val" id="count-sentinel" style="color:var(--danger)">0</div></div>
+            <div class="stat-card"><div class="stat-lab">Efficiency (Resolution)</div><div class="stat-val" id="stat-efficiency">0%</div></div>
         </div>
-
-        <div class="grid-dash">
-            <div class="card">
-                <h3 style="margin:0 0 2rem 0; font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Volume by Department</h3>
-                <div style="height: 300px;"><canvas id="deptChart"></canvas></div>
-            </div>
-            <div class="analysis-card">
-                <div>
-                    <h3 style="margin-top:0; color: var(--sunflower-yellow); font-family:'Outfit'; font-weight: 800;">Analytics Intelligence</h3>
-                    <div id="analysis-text" style="font-size: 1rem; line-height: 1.8; color: #e2e8f0; font-weight: 500;">
-                        Gathering intelligence from the database...
-                    </div>
-                </div>
-                <div style="margin-top:2.5rem; border-top:1px solid #334155; padding-top:1.25rem; font-size:0.75rem; color:#94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-                    Real-time Reporting Enabled
-                </div>
-            </div>
+        <div class="grid">
+            <div class="card"><h3>Incident Distribution</h3><div style="height: 250px;"><canvas id="chart-depts"></canvas></div></div>
+            <div class="card"><h3>Severity Matrix</h3><div style="height: 250px;"><canvas id="chart-severity"></canvas></div></div>
         </div>
-
-        <div class="grid-dash">
-             <div class="card">
-                <h3 style="font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Recent Pending Queue</h3>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>ID</th><th>Date</th><th>Dept</th><th>Category</th><th>Status</th></tr></thead>
-                        <tbody id="dash-list-body"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card">
-                <h3 style="font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Incident Types</h3>
-                <div style="height: 250px;"><canvas id="typeChart"></canvas></div>
-            </div>
+        <div class="card" style="margin-top: 2rem;">
+            <h3>Latest Activity Queue</h3>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Date</th><th>Department</th><th>Type</th><th>Severity</th><th>Status</th></tr></thead><tbody id="table-dash"></tbody></table></div>
         </div>
     </div>
 
-    <!-- FORM -->
-    <div id="section-staff" class="hidden">
+    <!-- FORM TAB -->
+    <div id="section-report" class="hidden">
         <div class="card">
-            <div class="form-section-title"><span>01</span> Reporter Identity</div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div><label>Full Legal Name</label><input type="text" id="rep-name" placeholder="John Doe"></div>
-                <div><label>Official Email Address</label><input type="email" id="rep-email" placeholder="j.doe@tdmh.com"></div>
+            <h2>New Incident Record</h2>
+            <div class="grid">
+                <div class="form-group"><label>Reporter Full Name</label><input type="text" id="f-name" placeholder="Full Name"></div>
+                <div class="form-group"><label>Severity Level</label><select id="f-severity"><option value="Low">Low (No harm/Near miss)</option><option value="Medium">Medium (Minor harm)</option><option value="High">High (Significant harm)</option><option value="Sentinel">Sentinel (Permanent harm/Death)</option></select></div>
             </div>
-
-            <div class="form-section-title"><span>02</span> Incident Context</div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div><label>Date of Event</label><input type="date" id="inc-date"></div>
-                <div><label>Time of Event</label><input type="time" id="inc-time"></div>
+            <div class="grid">
+                <div class="form-group"><label>Major Category</label><select id="f-category" onchange="updateSubtypes()"><option value="">Select Category...</option><option value="Clinical/Patient Incidents (Direct Care)">Clinical/Patient Incidents</option><option value="Safety and Environmental Incidents">Safety and Environmental Incidents</option><option value="Staff and Visitor Incidents">Staff and Visitor Incidents</option><option value="Administrative/Communication Incidents">Administrative/Communication Incidents</option><option value="Sentinel Events">Sentinel Events</option><option value="HR / Workplace Accidents">HR / Workplace Accidents</option></select></div>
+                <div class="form-group"><label>Specific Incident Type</label><select id="f-type" disabled><option value="">Select major category first...</option></select></div>
             </div>
-            
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div>
-                    <label>Responsible Department</label>
-                    <select id="inc-dept">
-                        <option value="">Choose Department...</option>
-                    </select>
-                </div>
-                <div><label>Exact Location / Room No.</label><input type="text" id="inc-location" placeholder="e.g. Ward 3B, Room 102"></div>
+            <div class="grid">
+                <div class="form-group"><label>Incident Date</label><input type="date" id="f-date"></div>
+                <div class="form-group"><label>Incident Time</label><input type="time" id="f-time"></div>
             </div>
-
-            <div class="form-section-title"><span>03</span> Subject Profile</div>
-            <label>Full Name of Subject</label><input type="text" id="subj-name" placeholder="Patient/Staff Name Involved">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div><label>Approx. Age</label><input type="number" id="subj-age"></div>
-                <div><label>Sex</label>
-                    <select id="subj-sex"><option value="">Select...</option><option>Male</option><option>Female</option><option>N/A</option></select>
-                </div>
+            <div class="form-group"><label>Responsible Unit</label><select id="f-dept"></select></div>
+            <div class="form-group"><label>Narrative Description</label><textarea id="f-desc" rows="4" placeholder="Describe the event objectively..."></textarea></div>
+            <div class="form-group"><label>Immediate Actions Taken</label><textarea id="f-imm-action" rows="3" placeholder="Steps taken immediately..."></textarea></div>
+            <div class="grid">
+                <div class="form-group"><label>Time Elapsed (Incident to Action)</label><select id="f-elapsed"><option value="">Select Time...</option><option value="5 Minutes">5 Minutes</option><option value="10 Minutes">10 Minutes</option><option value="15 Minutes">15 Minutes</option><option value="30 Minutes">30 Minutes</option><option value="1 Hour">1 Hour</option></select></div>
+                <div class="form-group"><label>Upload Evidence (Image)</label><input type="file" id="f-evidence" accept="image/*"></div>
             </div>
-
-            <div class="form-section-title"><span>04</span> Narrative Detail</div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div>
-                    <label>Major Category</label>
-                    <select id="inc-category" onchange="updateSubtypes()">
-                        <option value="">Select Major Category...</option>
-                        <option value="Clinical/Patient Incidents (Direct Care)">1. Clinical/Patient Incidents (Direct Care)</option>
-                        <option value="Safety and Environmental Incidents">2. Safety and Environmental Incidents</option>
-                        <option value="Staff and Visitor Incidents">3. Staff and Visitor Incidents</option>
-                        <option value="Administrative/Communication Incidents">4. Administrative/Communication Incidents</option>
-                        <option value="Sentinel Events">5. Sentinel Events</option>
-                        <option value="HR / Workplace Accidents">6. HR / Workplace Accidents</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Specific Incident Type</label>
-                    <select id="inc-type" disabled>
-                        <option value="">Select specific type...</option>
-                    </select>
-                </div>
-            </div>
-            <label>Chronological Description</label>
-            <textarea id="inc-desc" rows="6" placeholder="Describe the event in detail..."></textarea>
-
-            <div class="form-section-title"><span>05</span> Actions & Evidence</div>
-            <label>Immediate Actions Taken</label>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">What did you do immediately to fix it?</div>
-            <textarea id="imm-actions" rows="3" placeholder="e.g. Applied pressure, notified HOD..."></textarea>
-            
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                <div>
-                    <label>Time Elapsed (Incident to Action)</label>
-                    <select id="time-elapsed">
-                        <option value="">Select Time...</option>
-                        <option value="5 Minutes">5 Minutes</option>
-                        <option value="10 Minutes">10 Minutes</option>
-                        <option value="15 Minutes">15 Minutes</option>
-                        <option value="30 Minutes">30 Minutes</option>
-                        <option value="1 Hour">1 Hour</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Upload Evidence (Max 5MB)</label>
-                    <input type="file" id="evidence-upload" accept="image/*" style="padding: 0.6rem;">
-                </div>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #eff6ff, #fff); padding:2.5rem; border-radius:1.5rem; margin:3.5rem 0; border: 2px solid #dbeafe;">
-                <label style="color: var(--royal-blue); font-family: 'Outfit'; font-weight: 800; font-size: 1.1rem;">Digital Access Key</label>
-                <p style="font-size: 0.85rem; color: #1e40af; margin-bottom: 1.5rem; font-weight: 600;">Create a unique password to protect this report. You will need this to unlock it later.</p>
-                <input type="password" id="inc-pass" style="margin-bottom:0; background: white; border-color: #bfdbfe;" placeholder="••••••••">
-            </div>
-
-            <label>Reporter Signature</label>
-            <div class="sig-wrapper"><canvas id="sig-canvas" class="sig-pad"></canvas></div>
-            <div style="display:flex; gap:1.25rem;">
-                <button class="btn btn-outline" onclick="clearSignature('sig-canvas')">Clear Pad</button>
-                <button id="submit-btn" class="btn btn-primary" style="flex:1" onclick="submitReport()">Submit Official Report</button>
-            </div>
+            <div class="form-group"><label>Witnesses (if any)</label><input type="text" id="f-witness" placeholder="Name and Contact/Dept"></div>
+            <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 0.5rem; margin: 2rem 0;"><label style="color:var(--accent)">Incident Case Password</label><p style="font-size: 0.8rem; color: var(--text-muted);">Required for HODs to unlock and review this specific file.</p><input type="password" id="f-pass" style="background:white" placeholder="Min 6 characters"></div>
+            <div class="form-group"><label>Reporter's Digital Signature</label><div class="sig-box"><canvas id="canvas-sig"></canvas></div><button class="btn btn-outline" style="margin-top:0.5rem;" onclick="clearCanvas('canvas-sig')">Clear Signature</button></div>
+            <button class="btn btn-primary" style="width:100%" id="submit-main" onclick="submitNewReport()">File Official Record</button>
         </div>
     </div>
 
-    <!-- MGR LIST -->
-    <div id="section-mgr" class="hidden">
+    <!-- MANAGERIAL TAB -->
+    <div id="section-action" class="hidden">
         <div class="card">
-            <h3 style="margin-top:0; font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Investigation Hub</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">Unresolved cases awaiting management analysis and RCA submission.</p>
-            <div class="table-container">
+            <h2>Managerial Action Hub</h2>
+            <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Case ID</th><th>Date</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
-                    <tbody id="mgr-list-body"></tbody>
+                    <thead><tr><th>ID</th><th>Date</th><th>Reporter</th><th>Unit</th><th>Severity</th><th>Status</th><th>Review</th></tr></thead>
+                    <tbody id="table-action"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- CQI -->
+    <!-- ARCHIVE TAB -->
     <div id="section-cqi" class="hidden">
-        <div class="cqi-banner">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            CQI MASTER AUDIT CONSOLE
-        </div>
-        <div class="card">
-            <h3 style="margin-top:0; font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Historical Records</h3>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>ID</th><th>Date</th><th>Department</th><th>Status</th><th>Audit</th></tr></thead>
-                    <tbody id="cqi-list-body"></tbody>
-                </table>
-            </div>
-        </div>
+        <div class="card"><h2>Master Historical Archive</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Date</th><th>Severity</th><th>Type</th><th>Status</th><th>Review</th></tr></thead><tbody id="table-archive"></tbody></table></div></div>
     </div>
 
-    <!-- VIEW -->
+    <!-- DOCUMENT VIEW (FOR PRINT) -->
     <div id="section-view" class="hidden">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2.5rem;" class="hidden-print">
-                <div style="display:flex; gap:1.25rem;">
-                    <button class="btn btn-outline" onclick="goBack()">Back to List</button>
-                    <button class="btn btn-primary" onclick="window.print()" style="background: var(--text-main);">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        Export as PDF
-                    </button>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 2rem;" class="hidden-print">
+                <div><button class="btn btn-outline" onclick="goBack()">← Back to List</button></div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-primary" onclick="printReport()">Print Professional Document</button>
                 </div>
-                <div id="view-status-badge"></div>
             </div>
-            <div id="detail-content"></div>
 
-            <div id="mgr-response-container" class="mgr-form-box hidden hidden-print">
-                <h3 style="margin-top:0; color: var(--royal-blue); font-family: 'Outfit'; font-weight: 800;">Management Action Plan</h3>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
-                    <div><label>Reviewing HOD Name</label><input type="text" id="mgr-hod-name"></div>
-                    <div><label>Target Date for Resolution</label><input type="date" id="mgr-target-date"></div>
+            <div id="professional-report-container">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 2rem;">
+                    <div>
+                        <h1 id="view-id" style="margin:0; font-family: monospace; color: #000;">EveRep2026-00</h1>
+                        <div id="view-meta" style="color:var(--text-muted); font-size: 0.85rem; font-weight: 600;"></div>
+                    </div>
+                    <div id="view-status-badge"></div>
                 </div>
-                <label>Root Cause Analysis (RCA)</label>
-                <textarea id="mgr-rca" rows="3" placeholder="Identify the core failure..."></textarea>
-                <label>Corrective Action Plan</label>
-                <textarea id="mgr-corrective" rows="3" placeholder="Steps taken to prevent recurrence..."></textarea>
+
+                <div id="view-content"></div>
                 
-                <div style="background: white; padding: 1.75rem; border-radius: 1.25rem; margin: 2rem 0; border: 2px solid var(--border);">
-                    <label style="color:var(--royal-blue); font-weight: 800;">Resolution Status</label>
-                    <select id="mgr-new-status" style="margin-bottom:0; border-color: var(--royal-blue);">
-                        <option value="Pending">Pending</option>
-                        <option value="On Process">On Process</option>
-                        <option value="Closed">Closed</option>
-                    </select>
+                <div id="mgr-panel" class="hidden report-section">
+                    <div class="report-header-text">Management Analysis & Action Plan</div>
+                    <div class="grid hidden-print">
+                        <div class="form-group"><label>Root Cause Analysis (RCA)</label><textarea id="m-rca" rows="3"></textarea></div>
+                        <div class="form-group"><label>Corrective Actions</label><textarea id="m-action" rows="3"></textarea></div>
+                    </div>
+                    <div class="grid hidden-print">
+                        <div class="form-group"><label>Reviewing Officer (HOD)</label><input type="text" id="m-hod"></div>
+                        <div class="form-group"><label>Resolution Status</label><select id="m-status"><option value="On Process">Investigation Active</option><option value="Closed">Closed / Resolved</option></select></div>
+                    </div>
+                    <button class="btn btn-primary hidden-print" onclick="submitManagement()">Archive Final Resolution</button>
                 </div>
-
-                <label>Management Head Signature</label>
-                <div class="sig-wrapper"><canvas id="mgr-sig-canvas" class="sig-pad"></canvas></div>
-                <button id="mgr-submit-btn" class="btn btn-primary" style="width:100%" onclick="submitManagerResponse()">Archive Resolution</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL -->
-<div id="password-overlay" class="overlay hidden">
-    <div class="modal">
-        <div class="logo-box" style="margin: 0 auto 1.5rem auto; width: 60px; height: 60px; font-size: 1.5rem;">K</div>
-        <h3 id="modal-title" style="margin-top:0; font-family:'Outfit'; font-weight: 800; color: var(--royal-blue);">Verification Required</h3>
-        <p id="modal-desc" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">Please provide your access key to continue.</p>
-        <input type="password" id="unlock-pass-input" placeholder="ACCESS KEY" style="margin-bottom: 2rem; font-size: 1.5rem; text-align: center; letter-spacing: 0.4em; border-width: 2px; border-color: var(--royal-blue);">
-        <div style="display:flex; gap:1.25rem;">
-            <button id="modal-confirm-btn" class="btn btn-primary" style="flex:1">Unlock</button>
-            <button class="btn btn-outline" style="flex:1" onclick="closeModal()">Abort</button>
-        </div>
+<footer id="print-footer" class="hidden">
+    TDMH Internal Document | Confidentiality Level: Restricted | Page 1 of 1
+</footer>
+
+<div id="modal-auth" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000;">
+    <div class="card" style="width:400px; text-align:center;">
+        <h3 id="auth-title">Security Key</h3>
+        <p id="auth-desc" style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;"></p>
+        <input type="password" id="auth-input" style="font-size: 1.5rem; text-align: center; margin-bottom: 1rem; letter-spacing: 0.5em;">
+        <div id="auth-error" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 1rem;" class="hidden">Access Key Incorrect.</div>
+        <div style="display:flex; gap:1rem;"><button class="btn btn-primary" style="flex:1" id="auth-confirm">Verify</button><button class="btn btn-outline" style="flex:1" onclick="closeAuth()">Abort</button></div>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO2Ybpd_B6vkHF9m2nGjq67pW3sQOYI-peaxMA2Ne5yR3MQGSW4pxjd68Q91ifo5Xu/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO2Ybpd_B6vkHF9m2nGjq67pW3sQOYI-peaxMA2Ne5yR3MQGSW4pxjd68Q91ifo5Xu/exec"; 
     const DEPARTMENTS = ["ADMITTING", "AMBULANCE", "APE/YAKAP", "BILLING", "CASHIER", "CQI", "CREDIT AND COLLECTIONS", "CSR", "DIETARY", "ER", "FINANCE", "HR", "IT", "LABORATORY", "MAINTENANCE", "NSO", "PHARMACY", "Philhealth", "RADIOLOGY", "SECURITY"];
     const CQI_PASS = "bb1228";
-    
-    // Hierarchy Data
     const SUBTYPES = {
-        "Clinical/Patient Incidents (Direct Care)": [
-            "Medication Error", "Patient Fall", "Surgical/Procedural Error", 
-            "Diagnostic Incident", "Healthcare-Associated Infection", 
-            "Patient Identification Incident", "Skin Integrity Event"
-        ],
-        "Safety and Environmental Incidents": [
-            "Equipment Failure/Malfunction", "Security Incident", 
-            "Hazardous Material Spill/Exposure", "Infrastructure Issues"
-        ],
-        "Staff and Visitor Incidents": [
-            "Staff Injury", "Workplace Violence", "Visitor Accident"
-        ],
-        "Administrative/Communication Incidents": [
-            "Communication Breakdown", "Documentation Error"
-        ],
-        "Sentinel Events": [
-            "Wrong-site surgery", "Maternal or newborn death/injury", 
-            "Suicide or homicide within the facility"
-        ],
-        "HR / Workplace Accidents": [
-            "Workplace Accidents", "Near Misses", "Safety Hazards", 
-            "Behavioral Misconduct", "Security Breaches"
-        ]
+        "Clinical/Patient Incidents (Direct Care)": ["Medication Error", "Patient Fall", "Surgical/Procedural Error", "Diagnostic Incident", "Healthcare-Associated Infection", "Patient Identification Incident", "Skin Integrity Event"],
+        "Safety and Environmental Incidents": ["Equipment Failure/Malfunction", "Security Incident", "Hazardous Material Spill/Exposure", "Infrastructure Issues"],
+        "Staff and Visitor Incidents": ["Staff Injury", "Workplace Violence", "Visitor Accident"],
+        "Administrative/Communication Incidents": ["Communication Breakdown", "Documentation Error"],
+        "Sentinel Events": ["Wrong-site surgery", "Maternal or newborn death/injury", "Suicide or homicide within the facility"],
+        "HR / Workplace Accidents": ["Workplace Accidents", "Near Misses", "Safety Hazards", "Behavioral Misconduct", "Security Breaches"]
     };
 
     let reports = [];
-    let currentIdx = null;
-    let isManagerTab = false;
-    let isCQIMode = false;
-    let deptChart = null, typeChart = null;
-    let sigPads = {};
+    let currentReport = null;
+    let isAuditMode = false, isManagerTab = false, sigPads = {};
+    let deptChart = null, sevChart = null;
 
-    function updateSubtypes() {
-        const cat = document.getElementById('inc-category').value;
-        const typeSelect = document.getElementById('inc-type');
-        typeSelect.innerHTML = '<option value="">Select specific type...</option>';
-        
-        if (cat && SUBTYPES[cat]) {
-            typeSelect.disabled = false;
-            SUBTYPES[cat].forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t;
-                opt.innerText = t;
-                typeSelect.appendChild(opt);
-            });
-        } else {
-            typeSelect.disabled = true;
-        }
-    }
-
-    function formatDate(val) {
-        if (!val) return "---";
+    function formatSafeDate(val) {
+        if (!val) return 'N/A';
         const date = new Date(val);
-        return isNaN(date.getTime()) ? val : date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        if (isNaN(date.getTime()) || val.toString().includes('1899-12-30')) return 'N/A';
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
-    function setupSig(canvasId) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const wrapper = canvas.parentElement;
-        canvas.width = wrapper.offsetWidth;
-        canvas.height = 180;
-        ctx.strokeStyle = "#0052cc"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-
-        let drawing = false;
-        const getP = (e) => {
-            const r = canvas.getBoundingClientRect();
-            const x = e.touches ? e.touches[0].clientX : e.clientX;
-            const y = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: x - r.left, y: y - r.top };
-        };
-        const start = (e) => { drawing = true; const p = getP(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-        const move = (e) => { if(!drawing) return; e.preventDefault(); const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-        const stop = () => drawing = false;
-        canvas.onmousedown = start; canvas.onmousemove = move; window.onmouseup = stop;
-        canvas.ontouchstart = start; canvas.ontouchmove = move; canvas.ontouchend = stop;
-        sigPads[canvasId] = { canvas, ctx };
-    }
-
-    function clearSignature(id) { if (sigPads[id]) sigPads[id].ctx.clearRect(0, 0, sigPads[id].canvas.width, sigPads[id].canvas.height); }
-
-    async function fetchReports() {
-        const statusEl = document.getElementById('sync-status');
-        statusEl.innerHTML = `<span class="loader"></span><span style="margin-left:8px;">Syncing Grid...</span>`;
-        try {
-            const cb = 'cb' + Date.now();
-            const script = document.createElement('script');
-            script.src = `${SCRIPT_URL}?action=read&callback=${cb}`;
-            window[cb] = (data) => {
-                reports = data; renderTables(); renderCharts();
-                statusEl.innerHTML = `<span style="color:var(--emerald-green)">● Grid Online</span>`;
-                document.body.removeChild(script); delete window[cb];
-            };
-            document.body.appendChild(script);
-        } catch (err) { statusEl.innerHTML = `<span style="color:var(--danger)">● Sync Error</span>`; }
-    }
-
-    function renderTables() {
-        const dBody = document.getElementById('dash-list-body');
-        const mBody = document.getElementById('mgr-list-body');
-        const cBody = document.getElementById('cqi-list-body');
-        dBody.innerHTML = ''; mBody.innerHTML = ''; cBody.innerHTML = '';
-        
-        document.getElementById('stat-total').innerText = reports.length;
-        document.getElementById('stat-pending').innerText = reports.filter(r => r.Status === 'Pending').length;
-        document.getElementById('stat-process').innerText = reports.filter(r => r.Status === 'On Process').length;
-        document.getElementById('stat-closed').innerText = reports.filter(r => r.Status === 'Closed').length;
-
-        reports.sort((a,b) => new Date(b.SubmissionDate) - new Date(a.SubmissionDate)).forEach((r, idx) => {
-            const realIdx = reports.indexOf(r);
-            const dateStr = formatDate(r.SubmissionDate);
-            const sClass = r.Status.toLowerCase().replace(/\s/g, '-');
-            
-            const commonRow = `<td>${r.ReportID}</td><td>${dateStr}</td><td>${r.Departments}</td><td><span class="status-badge ${sClass}">${r.Status}</span></td>`;
-            
-            if (r.Status === 'Pending') dBody.innerHTML += `<tr>${commonRow.replace('</td><td><span', '</td><td>' + (r.IncidentType || 'N/A') + '</td><td><span')}</tr>`;
-            if (r.Status !== 'Closed') mBody.innerHTML += `<tr>${commonRow}<td><button class="btn btn-outline" style="padding:4px 12px; font-size:0.7rem; min-width:80px;" onclick="promptUnlock(${realIdx})">Open</button></td></tr>`;
-            cBody.innerHTML += `<tr>${commonRow}<td><button class="btn btn-outline" style="padding:4px 12px; font-size:0.7rem; min-width:80px;" onclick="cqiDirectOpen(${realIdx})">Audit</button></td></tr>`;
-        });
-    }
-
-    function cqiDirectOpen(idx) { currentIdx = idx; showDetail(reports[idx]); }
-
-    function renderCharts() {
-        const deptCtx = document.getElementById('deptChart').getContext('2d');
-        const typeCtx = document.getElementById('typeChart').getContext('2d');
-        const dCount = {}, tCount = {};
-        reports.forEach(r => {
-            (r.Departments || 'Unknown').split(', ').forEach(d => dCount[d] = (dCount[d] || 0) + 1);
-            tCount[r.IncidentType || 'Unknown'] = (tCount[r.IncidentType || 'Unknown'] || 0) + 1;
-        });
-        const dSorted = Object.entries(dCount).sort((a,b) => b[1] - a[1]).slice(0,10);
-        const tSorted = Object.entries(tCount).sort((a,b) => b[1] - a[1]).slice(0,10);
-
-        if(deptChart) deptChart.destroy();
-        deptChart = new Chart(deptCtx, {
-            type: 'bar',
-            data: { labels: dSorted.map(i => i[0]), datasets: [{ data: dSorted.map(i => i[1]), backgroundColor: '#0052cc', borderRadius: 8 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] } } } }
-        });
-
-        if(typeChart) typeChart.destroy();
-        typeChart = new Chart(typeCtx, {
-            type: 'doughnut',
-            data: { labels: tSorted.map(i => i[0]), datasets: [{ data: tSorted.map(i => i[1]), backgroundColor: ['#0052cc', '#10b981', '#facc15', '#f43f5e', '#7c3aed', '#ec4899', '#06b6d4'], borderWidth: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { family: 'Outfit', weight: 'bold' } } } }, cutout: '75%' }
-        });
-        updateInterpretation(dSorted, tSorted);
-    }
-
-    function updateInterpretation(d, t) {
-        const textEl = document.getElementById('analysis-text');
-        if(!reports.length) { textEl.innerHTML = "Awaiting system data..."; return; }
-        const closeRate = ((reports.filter(r => r.Status === 'Closed').length / reports.length) * 100).toFixed(0);
-        textEl.innerHTML = `<p>● <b>Departmental Focal Point:</b> <b>${d[0]?d[0][0]:'N/A'}</b> is the leading reporting unit.</p><p>● <b>Incident Trend:</b> <b>${t[0]?t[0][0]:'N/A'}</b> cases are currently prevalent.</p><p>● <b>Operational Velocity:</b> Resolution success rate is at <b>${closeRate}%</b>.</p>`;
-    }
-
-    async function submitReport() {
-        const btn = document.getElementById('submit-btn');
-        const pass = document.getElementById('inc-pass').value;
-        const repName = document.getElementById('rep-name').value;
-        const deptVal = document.getElementById('inc-dept').value;
-        const category = document.getElementById('inc-category').value;
-        const subtype = document.getElementById('inc-type').value;
-
-        if(!pass || !repName || !deptVal || !subtype) return alert("Halt: Name, Department, Category, and Password are required.");
-        
-        const fileInput = document.getElementById('evidence-upload');
-        let evidenceBase64 = "";
-        if (fileInput.files[0]) {
-            if (fileInput.files[0].size > 5 * 1024 * 1024) return alert("File too large. Max 5MB.");
-            evidenceBase64 = await new Promise((res) => {
-                const reader = new FileReader();
-                reader.onload = (e) => res(e.target.result);
-                reader.readAsDataURL(fileInput.files[0]);
-            });
+    function formatSafeTime(val) {
+        if (!val) return 'N/A';
+        // Handle ISO time strings from Sheet
+        if (typeof val === 'string' && val.includes('T')) {
+            const date = new Date(val);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
+        return val.toString();
+    }
 
-        const newID = 'ER26-01-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-        const payload = {
-            reporter: { name: repName, email: document.getElementById('rep-email').value },
-            incident: { 
-                date: document.getElementById('inc-date').value, 
-                time: document.getElementById('inc-time').value, 
-                depts: [deptVal], 
-                location: document.getElementById('inc-location').value, 
-                type: `${category} > ${subtype}`, 
-                severity: "N/A", 
-                desc: document.getElementById('inc-desc').value, 
-                action: document.getElementById('imm-actions').value, 
-                elapsed: document.getElementById('time-elapsed').value,
-                evidence: evidenceBase64
-            },
-            subject: { name: document.getElementById('subj-name').value, age: document.getElementById('subj-age').value, sex: document.getElementById('subj-sex').value, physician: "N/A" },
-            signature: sigPads['sig-canvas'].canvas.toDataURL()
+    function init() {
+        const d = document.getElementById('f-dept');
+        DEPARTMENTS.forEach(dept => {
+            const opt = document.createElement('option');
+            opt.value = dept; opt.innerText = dept; d.appendChild(opt);
+        });
+        fetchData();
+    }
+
+    async function fetchData() {
+        const sync = document.getElementById('sync-status');
+        sync.innerHTML = "Syncing Grid...";
+        let success = false;
+        const cbName = 'jsonp_' + Date.now();
+        const script = document.createElement('script');
+        window[cbName] = function(data) {
+            success = true; reports = data; renderDashboard();
+            sync.innerHTML = "● Online"; sync.style.color = "var(--success)";
+            delete window[cbName];
+            const tag = document.getElementById('jsonp-script'); if(tag) tag.parentElement.removeChild(tag);
         };
-        
-        btn.disabled = true; btn.innerHTML = `<span class="loader"></span> Encrypting & Sending...`;
-        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "create", id: newID, status: "Pending", password: pass, payload: btoa(JSON.stringify(payload)) }) });
-        alert("Success: " + newID + " has been archived."); window.location.reload();
+        script.id = 'jsonp-script';
+        script.src = `${SCRIPT_URL}?action=read&callback=${cbName}&ts=${Date.now()}`;
+        script.onerror = () => { sync.innerHTML = "● Offline"; sync.style.color = "var(--danger)"; };
+        document.body.appendChild(script);
     }
 
-    async function submitManagerResponse() {
-        const btn = document.getElementById('mgr-submit-btn');
-        const r = reports[currentIdx], newStatus = document.getElementById('mgr-new-status').value;
-        const data = { action: "update", reportId: r.ReportID, mgr_hod: document.getElementById('mgr-hod-name').value, mgr_target: document.getElementById('mgr-target-date').value, mgr_rca: document.getElementById('mgr-rca').value, mgr_action: document.getElementById('mgr-corrective').value, mgr_cqi: "Yes", mgr_elapsed: document.getElementById('mgr-target-date').value, mgr_effective: sigPads['mgr-sig-canvas'].canvas.toDataURL(), status: newStatus };
-        if(!data.mgr_hod || !data.mgr_rca) return alert("Critical: HOD Name and RCA data required.");
-        btn.disabled = true; btn.innerHTML = `<span class="loader"></span> Syncing Resolution...`;
-        try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }); window.location.reload(); } catch(e) { alert("Communication Error."); btn.disabled = false; }
-    }
+    function renderDashboard() {
+        const tBody = document.getElementById('table-dash'), aBody = document.getElementById('table-archive'), mBody = document.getElementById('table-action');
+        tBody.innerHTML = ''; aBody.innerHTML = ''; mBody.innerHTML = '';
+        const counts = { total: reports.length, pending: 0, sentinel: 0, closed: 0 };
 
-    function promptCQI() {
-        document.getElementById('modal-title').innerText = "CQI Security Key";
-        document.getElementById('modal-desc').innerText = "Restricted Access. Enter the Master Key to unlock the archive.";
-        document.getElementById('unlock-pass-input').value = "";
-        document.getElementById('password-overlay').classList.remove('hidden');
-        document.getElementById('modal-confirm-btn').onclick = verifyCQI;
-    }
-    function verifyCQI() {
-        if (document.getElementById('unlock-pass-input').value === CQI_PASS) { isCQIMode = true; closeModal(); showSection('section-cqi'); } else alert("Access Denied: Key Incorrect.");
-    }
-    function promptUnlock(idx) { 
-        currentIdx = idx; document.getElementById('modal-title').innerText = "Report Security Lock";
-        document.getElementById('modal-desc').innerText = "Enter the unique Access Key set by the original reporter.";
-        document.getElementById('unlock-pass-input').value = "";
-        document.getElementById('password-overlay').classList.remove('hidden'); 
-        document.getElementById('modal-confirm-btn').onclick = verifyUnlock;
-    }
-    function closeModal() { document.getElementById('password-overlay').classList.add('hidden'); }
-    function verifyUnlock() { if(document.getElementById('unlock-pass-input').value === reports[currentIdx].AccessPassword) { closeModal(); showDetail(reports[currentIdx]); } else alert("Access Denied: Key Invalid."); }
+        reports.forEach((r, idx) => {
+            const status = r.Status || "Pending";
+            if (status !== 'Closed') counts.pending++; else counts.closed++;
+            if (r.Severity === 'Sentinel') counts.sentinel++;
 
-    function goBack() { if (isCQIMode) showSection('section-cqi'); else if (isManagerTab) showSection('section-mgr'); else showSection('section-dash'); }
+            const sevClass = `sev-${(r.Severity || "Low").toLowerCase()}`;
+            const statClass = `status-${status.toLowerCase().replace(" ", "-")}`;
 
-    function showDetail(r) {
-        showSection('section-view');
-        const detail = document.getElementById('detail-content');
-        const sClass = r.Status.toLowerCase().replace(/\s/g, '-');
-        document.getElementById('view-status-badge').innerHTML = `<span class="status-badge ${sClass}">${r.Status}</span>`;
-        
-        let p = {}; try { p = JSON.parse(atob(r.Payload)); } catch(e) {}
-
-        detail.innerHTML = `
-            <div class="form-section-title"><span>🛡️</span> Security Credentials</div>
-            ${isCQIMode ? `<div class="audit-box"><label>REPORTER ACCESS KEY</label><div class="audit-key">${r.AccessPassword}</div></div>` : '<div style="background:#f1f5f9;padding:1.5rem;border-radius:1rem;margin-bottom:2.5rem;border:1px solid #e2e8f0;text-align:center;"><p style="font-size:0.9rem;color:var(--text-muted);margin:0;font-weight:600;">🔒 Report Encrypted. Credentials visible to authorized CQI only.</p></div>'}
-
-            <h2 style="margin-bottom:0; font-family:'Outfit'; font-size: 2.25rem; color: var(--royal-blue); font-weight: 800;">${r.ReportID}</h2>
-            <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom: 3rem; font-weight: 600;">Recorded: ${formatDate(r.SubmissionDate)}</p>
+            const baseRow = `<tr onclick="unlockReport(${idx})" style="cursor:pointer"><td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.Departments}</td><td>${r.IncidentType || 'General'}</td><td><span class="severity-pill ${sevClass}">${r.Severity || 'Low'}</span></td><td><span class="badge ${statClass}">${status}</span></td></tr>`;
             
-            <div class="form-section-title"><span>01</span> Identification Data</div>
-            <div class="detail-row"><div class="detail-label">Reported By</div><div class="detail-val">${r.ReporterName}</div></div>
-            <div class="detail-row"><div class="detail-label">Affected Subject</div><div class="detail-val">${r.SubjectName} (${r.SubjectAge}y, ${r.SubjectSex})</div></div>
-            
-            <div class="form-section-title"><span>02</span> Circumstances</div>
-            <div class="detail-row"><div class="detail-label">Incident Point</div><div class="detail-val">${formatDate(r.IncidentDate)} @ ${r.IncidentTime}</div></div>
-            <div class="detail-row"><div class="detail-label">Assigned Unit</div><div class="detail-val">${r.Departments}</div></div>
-            <div class="detail-row"><div class="detail-label">Classification</div><div class="detail-val">${r.IncidentType}</div></div>
-            <div class="detail-row"><div class="detail-label">Event Narrative</div><div class="detail-val" style="white-space:pre-wrap; background:#f8fafc; padding:1.5rem; border-radius:0.75rem; border:1px solid #e2e8f0;">${r.Description}</div></div>
-            
-            <div class="form-section-title"><span>03</span> Initial Action & Evidence</div>
-            <div class="detail-row"><div class="detail-label">Immediate Action</div><div class="detail-val">${r.ImmediateAction || 'N/A'}</div></div>
-            <div class="detail-row"><div class="detail-label">Time Elapsed</div><div class="detail-val">${r.ElapsedTime || 'N/A'}</div></div>
+            tBody.innerHTML += baseRow;
+            aBody.innerHTML += baseRow;
+            if (status !== 'Closed') {
+                mBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer"><td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.ReporterName}</td><td>${r.Departments}</td><td><span class="severity-pill ${sevClass}">${r.Severity}</span></td><td><span class="badge ${statClass}">${status}</span></td><td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;">Open File</button></td></tr>`;
+            }
+        });
+
+        document.getElementById('count-total').innerText = counts.total;
+        document.getElementById('count-pending').innerText = counts.pending;
+        document.getElementById('count-sentinel').innerText = counts.sentinel;
+        document.getElementById('stat-efficiency').innerText = counts.total > 0 ? Math.round((counts.closed / counts.total) * 100) + "%" : "0%";
+        updateCharts();
+    }
+
+    function unlockReport(idx) {
+        currentReport = reports[idx];
+        if(isAuditMode) { showView(currentReport); return; }
+        document.getElementById('auth-error').classList.add('hidden');
+        promptAuth("File Decryption", "Enter the Reporter's Access Key to open this institutional record.", (inputPass) => {
+            if (String(inputPass || "").trim() === String(currentReport.AccessPassword || "").trim()) {
+                closeAuth(); showView(currentReport);
+            } else { document.getElementById('auth-error').classList.remove('hidden'); }
+        });
+    }
+
+    function showView(r) {
+        showSection('view');
+        document.getElementById('view-id').innerText = r.ReportID;
+        document.getElementById('view-meta').innerText = `Filed: ${formatSafeDate(r.SubmissionDate)} | ${formatSafeTime(r.SubmissionDate)}`;
+        const status = r.Status || "Pending";
+        document.getElementById('view-status-badge').innerHTML = `<span class="badge status-${status.toLowerCase().replace(" ", "-")}">${status}</span>`;
+
+        let p = {}; try { p = JSON.parse(decodeURIComponent(escape(atob(r.Payload || "e30=")))); } catch(e) {}
+
+        const row = (label, value) => `<div class="data-row"><div class="data-label">${label}</div><div class="data-value">${value || 'N/A'}</div></div>`;
+
+        document.getElementById('view-content').innerHTML = `
+            <div class="report-section">
+                <div class="report-header-text">Section 1: Classification & Severity</div>
+                ${row('Report Category', r.IncidentCategory)}
+                ${row('Specific Event Type', r.IncidentType)}
+                ${row('Severity Index', `<span class="severity-pill sev-${(r.Severity || "low").toLowerCase()}">${r.Severity || 'Low'}</span>`)}
+            </div>
+            <div class="report-section">
+                <div class="report-header-text">Section 2: Occurrence Details</div>
+                ${row('Reporter', r.ReporterName)}
+                ${row('Occurrence Point', `${formatSafeDate(r.IncidentDate)} @ ${formatSafeTime(r.IncidentTime)}`)}
+                ${row('Facility Unit', r.Departments)}
+                ${row('Witness Log', r.Witnesses)}
+            </div>
+            <div class="report-section">
+                <div class="report-header-text">Section 3: Narrative & Initial Action</div>
+                <div class="form-group" style="margin-top:10px;"><label>Event Description</label><div style="padding:1rem; border:1px solid #eee; background:#fafafa;">${r.Description || 'None provided'}</div></div>
+                <div class="form-group"><label>Immediate Harm Mitigation</label><div style="padding:1rem; border:1px solid #eee; background:#fafafa;">${r.ImmediateAction || 'None provided'}</div></div>
+                ${row('Time to Action', r.ElapsedTime)}
+            </div>
             ${p.incident && p.incident.evidence ? `
-                <div class="detail-row">
-                    <div class="detail-label">Uploaded Evidence</div>
-                    <div class="detail-val">
-                        <img src="${p.incident.evidence}" style="max-width:300px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)">
-                    </div>
-                </div>
-            ` : ''}
-
-            <div class="form-section-title"><span>04</span> Authentication</div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem; margin-top: 1rem;">
-                <div style="text-align:center; padding:2rem; border:2px solid var(--border); border-radius:1.25rem; background: #fff;">
-                    <label style="color:var(--text-muted); font-size:0.7rem; display:block; margin-bottom:1.5rem; text-transform:uppercase; font-weight:800;">Reporter Digital Sign</label>
-                    <img src="${r.SignatureURL}" style="max-height:90px; filter: contrast(1.2) brightness(0.8);">
-                </div>
-                <div style="text-align:center; padding:2rem; border:2px solid var(--border); border-radius:1.25rem; background: #fff;">
-                    <label style="color:var(--text-muted); font-size:0.7rem; display:block; margin-bottom:1.5rem; text-transform:uppercase; font-weight:800;">Head Review Sign</label>
-                    ${r.Mgr_Effective && r.Mgr_Effective.startsWith('data:image') ? `<img src="${r.Mgr_Effective}" style="max-height:90px; filter: contrast(1.2) brightness(0.8);">` : '<div style="margin-top:2rem; color:var(--text-muted); font-weight:700; font-size:0.8rem;">PENDING REVIEW</div>'}
+            <div class="report-section">
+                <div class="report-header-text">Section 4: Evidence Reference</div>
+                <img src="${p.incident.evidence}" style="border:1px solid #ddd; padding:5px; background:#fff; display:block;">
+            </div>` : ''}
+            <div class="report-section">
+                <div class="report-header-text">Section 5: Authentication</div>
+                <div style="display:flex; gap:50px; margin-top:1rem;">
+                    <div><label>Reporter Signature</label>${r.SignatureURL ? `<img src="${r.SignatureURL}" style="max-height:70px; display:block;">` : '<p>NO SIG</p>'}</div>
+                    ${r.Mgr_HeadSign ? `<div><label>Head Reviewer</label><img src="${r.Mgr_HeadSign}" style="max-height:70px; display:block;"></div>` : ''}
                 </div>
             </div>
         `;
 
-        const mgrForm = document.getElementById('mgr-response-container');
-        if ((isManagerTab || isCQIMode) && r.Status !== 'Closed') {
-            mgrForm.classList.remove('hidden');
-            document.getElementById('mgr-new-status').value = r.Status;
-            document.getElementById('mgr-hod-name').value = r.Mgr_HOD || "";
-            setupSig('mgr-sig-canvas');
+        const panel = document.getElementById('mgr-panel');
+        if (status !== 'Closed') {
+            panel.classList.remove('hidden');
+            document.getElementById('m-hod').value = r.Mgr_HOD || "";
+            document.getElementById('m-rca').value = r.Mgr_RCA || "";
+            document.getElementById('m-action').value = r.Mgr_Action || "";
+            document.getElementById('m-status').value = status;
         } else {
-            mgrForm.classList.add('hidden');
-            if (r.Status !== 'Pending') {
-                detail.innerHTML += `
-                    <div class="form-section-title"><span>05</span> Investigation Outcome</div>
-                    <div class="detail-row"><div class="detail-label">Reviewing HOD</div><div class="detail-val">${r.Mgr_HOD || '---'}</div></div>
-                    <div class="detail-row"><div class="detail-label">Root Cause (RCA)</div><div class="detail-val">${r.Mgr_RCAMgr_CorrectiveAction || '---'}</div></div>
-                    <div class="detail-row"><div class="detail-label">Archived Target Date</div><div class="detail-val">${formatDate(r.Mgr_ElapsedClosure)}</div></div>
-                `;
-            }
+            panel.classList.add('hidden');
+            document.getElementById('view-content').innerHTML += `
+                <div class="report-section">
+                    <div class="report-header-text">Section 6: Formal Investigation Output</div>
+                    ${row('Root Cause Analysis', r.Mgr_RCA)}
+                    ${row('Action Plan', r.Mgr_Action)}
+                    ${row('Reviewing Officer', r.Mgr_HOD)}
+                </div>`;
         }
     }
 
-    function showSection(id) {
-        document.querySelectorAll('#section-dash, #section-staff, #section-mgr, #section-cqi, #section-view').forEach(s => s.classList.add('hidden'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active', 'cqi-active'));
-        document.getElementById(id).classList.remove('hidden');
-        if (id !== 'section-view') { isManagerTab = (id === 'section-mgr'); if (id !== 'section-view' && (id === 'section-staff' || id === 'section-dash' || id === 'section-mgr')) isCQIMode = (id === 'section-cqi'); }
-        const tabEl = document.getElementById(id.replace('section-', 'tab-'));
-        if (tabEl) tabEl.classList.add(isCQIMode ? 'cqi-active' : 'active');
-        if (id === 'section-staff') setupSig('sig-canvas');
-        if (id !== 'section-view') fetchReports();
+    async function submitNewReport() {
+        const btn = document.getElementById('submit-main'), pass = document.getElementById('f-pass').value, name = document.getElementById('f-name').value;
+        if (!name || pass.length < 6) return alert("Reporter Identity and valid Case Password (min 6) required.");
+        btn.disabled = true; btn.innerText = "Syncing...";
+        
+        const year = 2026;
+        const id = `EveRep${year}-${(reports.length + 1).toString().padStart(2, '0')}`;
+        
+        let evidence = "";
+        const file = document.getElementById('f-evidence').files[0];
+        if (file) { evidence = await new Promise((res) => { const reader = new FileReader(); reader.onload = (e) => res(e.target.result); reader.readAsDataURL(file); }); }
+
+        const payload = { reporter: { name: name }, incident: { date: document.getElementById('f-date').value, time: document.getElementById('f-time').value, depts: [document.getElementById('f-dept').value], category: document.getElementById('f-category').value, type: document.getElementById('f-type').value, severity: document.getElementById('f-severity').value, desc: document.getElementById('f-desc').value, action: document.getElementById('f-imm-action').value, elapsed: document.getElementById('f-elapsed').value, witnesses: document.getElementById('f-witness').value, evidence: evidence }, signature: sigPads['canvas-sig'].canvas.toDataURL() };
+
+        try {
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "create", id: id, status: "Pending", password: pass, payload: btoa(unescape(encodeURIComponent(JSON.stringify(payload)))) }) });
+            alert(`Record ${id} filed successfully.`); location.reload();
+        } catch (e) { alert("Sync Error."); btn.disabled = false; }
     }
 
-    window.onload = () => {
-        const div = document.getElementById('inc-dept');
-        DEPARTMENTS.forEach(d => { 
-            const opt = document.createElement('option');
-            opt.value = d;
-            opt.innerText = d;
-            div.appendChild(opt);
-        });
-        fetchReports();
-    };
+    async function submitManagement() {
+        if (!document.getElementById('m-hod').value || !document.getElementById('m-rca').value) return alert("RCA and Reviewing Officer fields are required.");
+        const data = { action: "update", reportId: currentReport.ReportID, mgr_hod: document.getElementById('m-hod').value, mgr_target: new Date().toLocaleDateString(), mgr_rca: document.getElementById('m-rca').value, mgr_action: document.getElementById('m-action').value, mgr_cqi: "Digitally_Verified", status: document.getElementById('m-status').value };
+        try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }); alert("Action Plan Archived."); location.reload(); } catch(e) { alert("Error."); }
+    }
+
+    function printReport() {
+        document.getElementById('print-timestamp').innerText = new Date().toLocaleString();
+        window.print();
+    }
+
+    function updateSubtypes() {
+        const cat = document.getElementById('f-category').value, typeSelect = document.getElementById('f-type');
+        typeSelect.innerHTML = '<option value="">Select Specific Type...</option>';
+        if (cat && SUBTYPES[cat]) { typeSelect.disabled = false; SUBTYPES[cat].forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; typeSelect.appendChild(opt); }); }
+        else { typeSelect.disabled = true; }
+    }
+
+    function promptCQI() { document.getElementById('auth-error').classList.add('hidden'); promptAuth("Master Key Verification", "Enter CQI access key.", (val) => { if (val.trim() === CQI_PASS) { isAuditMode = true; closeAuth(); showSection('cqi'); } else { document.getElementById('auth-error').classList.remove('hidden'); } }); }
+    function promptAuth(title, desc, callback) { const m = document.getElementById('modal-auth'); m.classList.remove('hidden'); document.getElementById('auth-title').innerText = title; document.getElementById('auth-desc').innerText = desc; document.getElementById('auth-input').value = ""; document.getElementById('auth-confirm').onclick = () => callback(document.getElementById('auth-input').value); }
+    function closeAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
+    function goBack() { if (isAuditMode) showSection('cqi'); else if (isManagerTab) showSection('action'); else showSection('dash'); }
+
+    function showSection(id) {
+        document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+        document.getElementById('section-' + id).classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('nav-' + id).classList.add('active');
+        if(id !== 'view') { isAuditMode = (id === 'cqi'); isManagerTab = (id === 'action'); }
+        if(id === 'report') setTimeout(() => setupCanvas('canvas-sig'), 300);
+        if(id === 'dash' || id === 'action') fetchData();
+    }
+
+    function setupCanvas(id) {
+        const c = document.getElementById(id), ctx = c.getContext('2d'), box = c.parentElement;
+        c.width = box.offsetWidth; c.height = 150;
+        ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        let drawing = false;
+        const getPos = (e) => { const rect = c.getBoundingClientRect(); const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left, y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top; return { x, y }; };
+        const start = (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+        const move = (e) => { if (!drawing) return; if (e.touches) e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+        c.onmousedown = start; c.onmousemove = move; window.addEventListener('mouseup', () => drawing = false);
+        c.ontouchstart = start; c.ontouchmove = move; c.ontouchend = () => drawing = false;
+        sigPads[id] = { canvas: c, ctx: ctx };
+    }
+
+    function clearCanvas(id) { if (sigPads[id]) sigPads[id].ctx.clearRect(0, 0, sigPads[id].canvas.width, sigPads[id].canvas.height); }
+
+    function updateCharts() {
+        if (deptChart) deptChart.destroy(); if (sevChart) sevChart.destroy();
+        const dCtx = document.getElementById('chart-depts').getContext('2d'), sCtx = document.getElementById('chart-severity').getContext('2d');
+        const depts = {}; reports.forEach(r => depts[r.Departments] = (depts[r.Departments] || 0) + 1);
+        const sevs = { Low: 0, Medium: 0, High: 0, Sentinel: 0 }; reports.forEach(r => { if (sevs.hasOwnProperty(r.Severity)) sevs[r.Severity]++; });
+        deptChart = new Chart(dCtx, { type: 'bar', data: { labels: Object.keys(depts), datasets: [{ label: 'Cases', data: Object.values(depts), backgroundColor: '#2563eb' }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        sevChart = new Chart(sCtx, { type: 'doughnut', data: { labels: Object.keys(sevs), datasets: [{ data: Object.values(sevs), backgroundColor: ['#059669', '#d97706', '#dc2626', '#0f172a'] }] }, options: { maintainAspectRatio: false, cutout: '70%' } });
+    }
+
+    window.onload = init;
 </script>
 </body>
 </html>

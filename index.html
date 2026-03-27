@@ -32,10 +32,11 @@
 
         h1, h2, h3, .brand-text { font-family: 'Lexend', sans-serif; }
 
+        /* UI Styling */
         .header {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
-            padding: 1.25rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,6 +79,7 @@
         table { width: 100%; border-collapse: collapse; background: white; }
         th { background: #f8fafc; text-align: left; padding: 1rem; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); letter-spacing: 0.05em; font-weight: 800; }
         td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; font-weight: 500; }
+        tr:hover td { background: #fcfcfd; }
 
         .btn { padding: 0.85rem 1.75rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; }
         .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
@@ -93,7 +95,7 @@
 
         .hidden { display: none !important; }
 
-        /* Report Alignment - OCD Grade */
+        /* Report View OCD Grade Alignment */
         .report-section { border-top: 2.5px solid #0f172a; margin-top: 2.5rem; padding-top: 1.5rem; }
         .report-header-text { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 900; margin-bottom: 1.5rem; }
         .data-row { display: grid; grid-template-columns: 240px 1fr; border-bottom: 1px solid #f1f5f9; padding: 1.1rem 0; align-items: baseline; }
@@ -124,7 +126,7 @@
 </head>
 <body>
 
-<!-- Hidden Print Headers -->
+<!-- Print Components -->
 <div id="print-brand-header" class="hidden">
     <h1>TDMH</h1>
     <p>Official Institutional Event & Incident Record</p>
@@ -134,7 +136,7 @@
 <header class="header">
     <div class="brand">
         <div class="logo">TDMH</div>
-        <div class="brand-text" style="font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em;">Safety & Quality Assurance Portal</div>
+        <div class="brand-text" style="font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em;">Quality & Safety Assurance Portal</div>
     </div>
     <div id="sync-status" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
         Connecting...
@@ -145,7 +147,7 @@
     <nav class="nav">
         <button id="nav-dash" class="nav-btn active" onclick="showSection('dash')">Overview</button>
         <button id="nav-report" class="nav-btn" onclick="showSection('report')">New Incident</button>
-        <button id="nav-action" class="nav-btn" onclick="showSection('action')">Action Area (HOD)</button>
+        <button id="nav-action" class="nav-btn" onclick="showSection('action')">Head of Department</button>
         <button id="nav-cqi" class="nav-btn" onclick="promptCQI()">Archive</button>
     </nav>
 
@@ -160,20 +162,17 @@
         <div class="grid">
             <div class="card"><div class="card-body"><h3>Institutional Activity Feed</h3><div class="table-wrap"><table><thead><tr><th>ID</th><th>Date</th><th>Unit</th><th>Type</th><th>Severity</th><th>Status</th></tr></thead><tbody id="table-dash"></tbody></table></div></div></div>
         </div>
-        <div class="grid" style="margin-top: 1.5rem; opacity: 0; height: 0; overflow: hidden;">
-            <canvas id="chart-depts"></canvas>
-            <canvas id="chart-severity"></canvas>
-        </div>
+        <div class="grid" style="margin-top: 1.5rem; opacity: 0; height: 0; overflow: hidden;"><canvas id="chart-depts"></canvas><canvas id="chart-severity"></canvas></div>
     </div>
 
     <!-- FORM TAB -->
     <div id="section-report" class="hidden">
         <div class="card">
             <div class="card-body">
-                <h2 style="font-weight: 800;">Professional Incident Filing</h2>
+                <h2 style="font-weight: 800;">Incident Filing Form</h2>
                 <div class="grid">
-                    <div class="form-group"><label>Reporter Full Identity</label><input type="text" id="f-name" placeholder="Full Name"></div>
-                    <div class="form-group"><label>Severity Assessment</label><select id="f-severity"><option value="Low">Low (No harm)</option><option value="Medium">Medium (Minor harm)</option><option value="High">High (Significant harm)</option><option value="Sentinel">Sentinel (Permanent harm/Death)</option></select></div>
+                    <div class="form-group"><label>Reporter Full Name</label><input type="text" id="f-name" placeholder="Name"></div>
+                    <div class="form-group"><label>Severity Level</label><select id="f-severity"><option value="Low">Low (No harm)</option><option value="Medium">Medium (Minor harm)</option><option value="High">High (Significant harm)</option><option value="Sentinel">Sentinel (Permanent harm/Death)</option></select></div>
                 </div>
                 <div class="grid">
                     <div class="form-group"><label>Major Category</label><select id="f-category" onchange="updateSubtypes()"><option value="">Select Category...</option><option value="Clinical/Patient Incidents (Direct Care)">Clinical/Patient Incidents</option><option value="Safety and Environmental Incidents">Safety and Environmental Incidents</option><option value="Staff and Visitor Incidents">Staff and Visitor Incidents</option><option value="Administrative/Communication Incidents">Administrative/Communication Incidents</option><option value="Sentinel Events">Sentinel Events</option><option value="HR / Workplace Accidents">HR / Workplace Accidents</option></select></div>
@@ -183,30 +182,33 @@
                     <div class="form-group"><label>Occurrence Date</label><input type="date" id="f-date"></div>
                     <div class="form-group"><label>Occurrence Time</label><input type="time" id="f-time"></div>
                 </div>
-                <div class="form-group"><label>Department / Responsible Unit</label><select id="f-dept"></select></div>
-                <div class="form-group"><label>Factual Chronological Description</label><textarea id="f-desc" rows="4" placeholder="Detail the event..."></textarea></div>
-                <div class="form-group"><label>Immediate Harm Mitigation</label><textarea id="f-imm-action" rows="2" placeholder="Actions taken immediately..."></textarea></div>
+                <div class="grid">
+                    <div class="form-group"><label>Department / Responsible Unit</label><select id="f-dept"></select></div>
+                    <div class="form-group"><label>Exact Location</label><input type="text" id="f-location" placeholder="e.g., Ward 3B, Room 202"></div>
+                </div>
+                <div class="form-group"><label>Chronological Narrative Description</label><textarea id="f-desc" rows="4" placeholder="Detail the event..."></textarea></div>
+                <div class="form-group"><label>Immediate Mitigation Actions</label><textarea id="f-imm-action" rows="2" placeholder="Steps taken immediately..."></textarea></div>
                 <div class="grid">
                     <div class="form-group"><label>Response Latency</label><select id="f-elapsed"><option value="">Select...</option><option>5 Mins</option><option>10 Mins</option><option>30 Mins</option><option>1 Hour</option></select></div>
-                    <div class="form-group"><label>Visual Evidence (Image)</label><input type="file" id="f-evidence" accept="image/*"></div>
+                    <div class="form-group"><label>Evidence Attachment (Image)</label><input type="file" id="f-evidence" accept="image/*"></div>
                 </div>
-                <div class="form-group"><label>Witness Log</label><input type="text" id="f-witness"></div>
-                <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 0.5rem; margin: 2rem 0;"><label style="color:var(--accent)">Institutional Access Key</label><p style="font-size: 0.8rem; color: var(--text-muted);">Required for Heads of Department to react and close this file.</p><input type="password" id="f-pass" style="background:white" placeholder="Min 6 characters"></div>
+                <div class="form-group"><label>Witness Log</label><input type="text" id="f-witness" placeholder="Name and Contact/Dept"></div>
+                <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 0.5rem; margin: 2rem 0;"><label style="color:var(--accent)">Case Access Key</label><p style="font-size: 0.8rem; color: var(--text-muted);">Required for HODs to unlock and respond to this specific file.</p><input type="password" id="f-pass" style="background:white" placeholder="Min 6 characters"></div>
                 <div class="form-group"><label>Filer Signature</label><div class="sig-box"><canvas id="canvas-sig"></canvas></div><button class="btn btn-outline" style="margin-top:0.5rem;" onclick="clearCanvas('canvas-sig')">Clear Pad</button></div>
                 <button class="btn btn-primary" style="width:100%; justify-content: center;" id="submit-main" onclick="submitNewReport()">Transmit Official Record</button>
             </div>
         </div>
     </div>
 
-    <!-- ACTION AREA -->
+    <!-- HOD TAB -->
     <div id="section-action" class="hidden">
         <div class="card">
             <div class="card-body">
-                <h2>Managerial Action Area</h2>
-                <p style="color:var(--text-muted); margin-bottom: 2rem;">Heads of Department: Provide RCA and resolution strategies for active cases. Password required.</p>
+                <h2>Head of Department Review</h2>
+                <p style="color:var(--text-muted); margin-bottom: 2rem;">Access unresolved institutional records to provide RCA and Action Plans. Case-specific password required.</p>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>ID</th><th>Date</th><th>Reporter</th><th>Unit</th><th>Severity</th><th>Action</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Date</th><th>Reporter</th><th>Unit</th><th>Location</th><th>Severity</th><th>Action</th></tr></thead>
                         <tbody id="table-action"></tbody>
                     </table>
                 </div>
@@ -214,7 +216,7 @@
         </div>
     </div>
 
-    <!-- ARCHIVE -->
+    <!-- ARCHIVE TAB -->
     <div id="section-cqi" class="hidden"><div class="card"><div class="card-body"><h2>Institutional Audit Archives</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Date</th><th>Unit</th><th>Severity</th><th>Status</th><th>Review</th></tr></thead><tbody id="table-archive"></tbody></table></div></div></div></div>
 
     <!-- VIEW REPORT -->
@@ -222,17 +224,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="back-nav" style="margin-bottom: 2.5rem;">
-                    <button class="btn btn-outline" onclick="goBack()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        Back to List
-                    </button>
+                    <button class="btn btn-outline" onclick="goBack()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><polyline points="15 18 9 12 15 6"></polyline></svg>Back to List</button>
                 </div>
 
                 <div id="professional-document">
                     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1.5px solid #0f172a; padding-bottom: 1.25rem; margin-bottom: 2.5rem;">
                         <div>
                             <h1 id="view-id" style="margin:0; font-family:monospace; font-size: 2.75rem; letter-spacing: -1px; font-weight: 800;">EveRep2026-00</h1>
-                            <div id="view-meta" style="color:var(--text-muted); font-size: 0.85rem; font-weight: 700; margin-top:5px; text-transform: uppercase; letter-spacing: 0.05em;"></div>
+                            <div id="view-meta" style="color:var(--text-muted); font-size: 0.85rem; font-weight: 700; margin-top:5px; text-transform: uppercase;"></div>
                         </div>
                         <div id="view-status-badge"></div>
                     </div>
@@ -241,19 +240,19 @@
                     
                     <!-- HOD REACTION PANEL -->
                     <div id="mgr-panel" class="hidden report-section">
-                        <div class="report-header-text">Section 6: Management Reaction & Investigation</div>
+                        <div class="report-header-text">Section 6: HOD Investigation & Action Plan</div>
                         <div class="grid hidden-print">
                             <div class="form-group"><label>Root Cause Analysis (RCA)</label><textarea id="m-rca" rows="3" placeholder="Identify systematic failures..."></textarea></div>
                             <div class="form-group"><label>Corrective Action Plan</label><textarea id="m-action" rows="3" placeholder="Steps taken to prevent recurrence..."></textarea></div>
                         </div>
                         <div class="grid hidden-print">
-                            <div class="form-group"><label>Reviewing HOD</label><input type="text" id="m-hod" placeholder="Identity of Official"></div>
+                            <div class="form-group"><label>Reviewing HOD</label><input type="text" id="m-hod" placeholder="Name of Official"></div>
                             <div class="form-group"><label>Decision Status</label><select id="m-status"><option value="On Process">Investigation Active</option><option value="Closed">Closed / Resolved</option></select></div>
                         </div>
                         <div class="form-group hidden-print">
-                            <label>HOD Authorization Signature</label>
+                            <label>HOD Signature Authorization</label>
                             <div class="sig-box"><canvas id="canvas-sig-mgr"></canvas></div>
-                            <button class="btn btn-outline sig-clear-btn" style="margin-top:0.5rem;" onclick="clearCanvas('canvas-sig-mgr')">Clear Signature</button>
+                            <button class="btn btn-outline sig-clear-btn" style="margin-top:0.5rem;" onclick="clearCanvas('canvas-sig-mgr')">Clear Pad</button>
                         </div>
                         <div class="hidden-print" style="margin-top: 2rem;">
                             <button class="btn btn-primary" style="width:100%; justify-content: center;" onclick="submitManagement()">Archive Final Institutional Decision</button>
@@ -263,7 +262,7 @@
             </div>
 
             <div class="action-footer hidden-print">
-                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;">Institutional Control Level: RESTRICTED</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;">Level: RESTRICTED INSTITUTIONAL RECORD</div>
                 <button class="btn btn-primary" onclick="printReport()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                     Print Professional Document
@@ -273,13 +272,13 @@
     </div>
 </div>
 
-<footer id="print-footer" class="hidden">OFFICIAL INSTITUTIONAL PROPERTY OF TDMH | QUALITY ASSURANCE UNIT</footer>
+<footer id="print-footer" class="hidden">PROPERTY OF TDMH QUALITY ASSURANCE UNIT | STRICTLY CONFIDENTIAL</footer>
 
 <!-- AUTH MODAL -->
 <div id="modal-auth" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; z-index:1000;">
     <div class="card" style="width:380px; text-align:center;">
         <div class="card-body">
-            <h3 id="auth-title">Security Key</h3>
+            <h3 id="auth-title">Institutional Lock</h3>
             <p id="auth-desc" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 1.5rem;"></p>
             <input type="password" id="auth-input" style="font-size: 1.5rem; text-align: center; margin-bottom: 1rem; letter-spacing: 0.4em;">
             <div id="auth-error" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 1rem; font-weight: 800;" class="hidden">KEY INCORRECT. ACCESS DENIED.</div>
@@ -294,7 +293,7 @@
     const CQI_PASS = "bb1228";
     const SUBTYPES = {
         "Clinical/Patient Incidents (Direct Care)": ["Medication Error", "Patient Fall", "Infection Control", "Diagnostic Error", "Surgical Incident"],
-        "Safety and Environmental Incidents": ["Equipment Failure", "Security Breach", "Hazardous Spill", "Infrastructure Issue"],
+        "Safety and Environmental Incidents": ["Equipment Failure", "Security Incident", "Hazardous Spill", "Infrastructure Issue"],
         "Staff and Visitor Incidents": ["Staff Injury", "Workplace Violence", "Visitor Accident"],
         "Administrative/Communication Incidents": ["Documentation Error", "Communication Breakdown"],
         "Sentinel Events": ["Wrong-site surgery", "Death in facility"],
@@ -306,7 +305,6 @@
     let isAuditMode = false, isManagerTab = false, sigPads = {};
     let deptChart = null, sevChart = null;
 
-    // --- OCD-Grade Epoch Correction ---
     function formatSafeDate(val) {
         if (!val) return 'N/A';
         const d = new Date(val);
@@ -363,12 +361,13 @@
             const sevClass = `sev-${(r.Severity || "Low").toLowerCase()}`;
             const statClass = `status-${status.toLowerCase().replace(" ", "-")}`;
 
-            const baseRow = `<td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.Departments}</td><td>${r.IncidentType || 'General'}</td><td><span class="severity-pill ${sevClass}">${r.Severity || 'Low'}</span></td><td><span class="badge ${statClass}">${status}</span></td>`;
+            const baseCells = `<td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.Departments}</td><td>${r.IncidentType || 'General'}</td><td><span class="severity-pill ${sevClass}">${r.Severity || 'Low'}</span></td><td><span class="badge ${statClass}">${status}</span></td>`;
             
-            tBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer">${baseRow}</tr>`;
-            aBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer">${baseRow}</tr>`;
+            tBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer">${baseCells}</tr>`;
+            aBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer">${baseCells}</tr>`;
+            
             if (status !== 'Closed') {
-                mBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer"><td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.ReporterName}</td><td>${r.Departments}</td><td><span class="severity-pill ${sevClass}">${r.Severity}</span></td><td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;">React</button></td></tr>`;
+                mBody.innerHTML += `<tr onclick="unlockReport(${idx})" style="cursor:pointer"><td><b>${r.ReportID}</b></td><td>${formatSafeDate(r.SubmissionDate)}</td><td>${r.ReporterName}</td><td>${r.Departments}</td><td>${r.Location || 'N/A'}</td><td><span class="severity-pill ${sevClass}">${r.Severity}</span></td><td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;">Unlock</button></td></tr>`;
             }
         });
 
@@ -383,7 +382,7 @@
         currentReport = reports[idx];
         if(isAuditMode) { showView(currentReport); return; }
         document.getElementById('auth-error').classList.add('hidden');
-        promptAuth("Record Decryption", "Verify the unique Access Key to interact with this case.", (inputPass) => {
+        promptAuth("Institutional Verification", "Enter the Reporter's Access Key to open this case.", (inputPass) => {
             if (String(inputPass || "").trim() === String(currentReport.AccessPassword || "").trim()) {
                 closeAuth(); showView(currentReport);
             } else { document.getElementById('auth-error').classList.remove('hidden'); }
@@ -393,7 +392,7 @@
     function showView(r) {
         showSection('view');
         document.getElementById('view-id').innerText = r.ReportID;
-        document.getElementById('view-meta').innerText = `Archived: ${formatSafeDate(r.SubmissionDate)} | ${formatSafeTime(r.SubmissionDate)}`;
+        document.getElementById('view-meta').innerText = `Filed: ${formatSafeDate(r.SubmissionDate)} at ${formatSafeTime(r.SubmissionDate)}`;
         const status = r.Status || "Pending";
         document.getElementById('view-status-badge').innerHTML = `<span class="badge status-${status.toLowerCase().replace(" ", "-")}">${status}</span>`;
 
@@ -403,31 +402,28 @@
 
         document.getElementById('view-content').innerHTML = `
             <div class="report-section">
-                <div class="report-header-text">Section 1: Classification & Risk</div>
+                <div class="report-header-text">1. Classification & Institutional Risk</div>
                 ${row('Incident Category', r.IncidentCategory)}
-                ${row('Incident Sub-Type', r.IncidentType)}
-                ${row('Institutional Risk', `<span class="severity-pill sev-${(r.Severity || "low").toLowerCase()}">${r.Severity || 'Low'}</span>`)}
+                ${row('Specific Event Type', r.IncidentType)}
+                ${row('Severity Assessment', `<span class="severity-pill sev-${(r.Severity || "low").toLowerCase()}">${r.Severity || 'Low'}</span>`)}
             </div>
             <div class="report-section">
-                <div class="report-header-text">Section 2: Occurrence Information</div>
+                <div class="report-header-text">2. Occurrence Information</div>
                 ${row('Reporter Identity', r.ReporterName)}
                 ${row('Point of Occurrence', `${formatSafeDate(r.IncidentDate)} at ${formatSafeTime(r.IncidentTime)}`)}
                 ${row('Responsible Unit', r.Departments)}
-                ${row('Witness Log', r.Witnesses)}
+                ${row('Exact Location', r.Location)}
+                ${row('Witness Accounts', r.Witnesses)}
             </div>
             <div class="report-section">
-                <div class="report-header-text">Section 3: Narrative & Action</div>
+                <div class="report-header-text">3. Narrative & Immediate Reaction</div>
                 <div class="form-group" style="margin-top:10px;"><label>Chronological Narrative</label><div style="padding:1.25rem; border:1px solid #eee; background:#fafafa; font-size: 0.95rem; border-radius: 6px;">${r.Description || 'N/A'}</div></div>
                 <div class="form-group"><label>Immediate Actions Taken</label><div style="padding:1.25rem; border:1px solid #eee; background:#fafafa; font-size: 0.95rem; border-radius: 6px;">${r.ImmediateAction || 'N/A'}</div></div>
                 ${row('Time to Action', r.ElapsedTime)}
             </div>
-            ${p.incident && p.incident.evidence ? `
+            ${p.incident && p.incident.evidence ? `<div class="report-section"><div class="report-header-text">4. Visual Evidence Reference</div><img src="${p.incident.evidence}" style="border:1px solid #eee; padding:6px; max-height:400px; display:block; border-radius: 6px;"></div>` : ''}
             <div class="report-section">
-                <div class="report-header-text">Section 4: Evidence Reference</div>
-                <img src="${p.incident.evidence}" style="border:1px solid #eee; padding:6px; max-height:400px; display:block; border-radius: 6px;">
-            </div>` : ''}
-            <div class="report-section">
-                <div class="report-header-text">Section 5: Authorization Log</div>
+                <div class="report-header-text">5. Official Signatures</div>
                 <div style="display:flex; gap:100px; margin-top:1rem;">
                     <div><label style="font-size: 0.7rem; color: #999;">Filer</label>${r.SignatureURL ? `<img src="${r.SignatureURL}" style="max-height:60px; display:block;">` : '<p>NOT SIGNED</p>'}</div>
                     ${r.Mgr_HeadSign ? `<div><label style="font-size: 0.7rem; color: #999;">HOD Approval</label><img src="${r.Mgr_HeadSign}" style="max-height:60px; display:block;"></div>` : ''}
@@ -446,44 +442,34 @@
         } else {
             panel.classList.add('hidden');
             if (status !== 'Pending') {
-                document.getElementById('view-content').innerHTML += `
-                    <div class="report-section">
-                        <div class="report-header-text">Section 6: HOD Resolution Output</div>
-                        ${row('Root Cause Analysis', r.Mgr_RCA)}
-                        ${row('Action Strategy', r.Mgr_Action)}
-                        ${row('Reviewing Officer', r.Mgr_HOD)}
-                    </div>`;
+                document.getElementById('view-content').innerHTML += `<div class="report-section"><div class="report-header-text">6. HOD Resolution Output</div>${row('Root Cause Analysis', r.Mgr_RCA)}${row('Action Strategy', r.Mgr_Action)}${row('Reviewing Officer', r.Mgr_HOD)}</div>`;
             }
         }
     }
 
     async function submitNewReport() {
         const btn = document.getElementById('submit-main'), pass = document.getElementById('f-pass').value, name = document.getElementById('f-name').value;
-        if (!name || pass.length < 6) return alert("Reporter Name and valid Access Key required.");
+        if (!name || pass.length < 6) return alert("Identity and valid Access Key required.");
         btn.disabled = true; btn.innerText = "Transmitting...";
         const id = `EveRep2026-${(reports.length + 1).toString().padStart(2, '0')}`;
         let evidence = "";
         const file = document.getElementById('f-evidence').files[0];
         if (file) { evidence = await new Promise((res) => { const reader = new FileReader(); reader.onload = (e) => res(e.target.result); reader.readAsDataURL(file); }); }
-        const payload = { reporter: { name: name }, incident: { date: document.getElementById('f-date').value, time: document.getElementById('f-time').value, depts: [document.getElementById('f-dept').value], category: document.getElementById('f-category').value, type: document.getElementById('f-type').value, severity: document.getElementById('f-severity').value, desc: document.getElementById('f-desc').value, action: document.getElementById('f-imm-action').value, elapsed: document.getElementById('f-elapsed').value, witnesses: document.getElementById('f-witness').value, evidence: evidence }, signature: sigPads['canvas-sig'].canvas.toDataURL() };
+        const payload = { reporter: { name: name }, incident: { date: document.getElementById('f-date').value, time: document.getElementById('f-time').value, depts: [document.getElementById('f-dept').value], location: document.getElementById('f-location').value, category: document.getElementById('f-category').value, type: document.getElementById('f-type').value, severity: document.getElementById('f-severity').value, desc: document.getElementById('f-desc').value, action: document.getElementById('f-imm-action').value, elapsed: document.getElementById('f-elapsed').value, witnesses: document.getElementById('f-witness').value, evidence: evidence }, signature: sigPads['canvas-sig'].canvas.toDataURL() };
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "create", id: id, status: "Pending", password: pass, payload: btoa(unescape(encodeURIComponent(JSON.stringify(payload)))) }) });
-            alert(`Official Record ${id} filed successfully.`); location.reload();
+            alert(`Record ${id} filed successfully.`); location.reload();
         } catch (e) { alert("Error."); btn.disabled = false; }
     }
 
     async function submitManagement() {
-        if (!document.getElementById('m-hod').value || !document.getElementById('m-rca').value) return alert("RCA and Reviewer identity required.");
+        if (!document.getElementById('m-hod').value || !document.getElementById('m-rca').value) return alert("RCA and identity required.");
         const sigData = sigPads['canvas-sig-mgr'].canvas.toDataURL();
         const data = { action: "update", reportId: currentReport.ReportID, mgr_hod: document.getElementById('m-hod').value, mgr_target: new Date().toLocaleDateString(), mgr_rca: document.getElementById('m-rca').value, mgr_action: document.getElementById('m-action').value, mgr_cqi: sigData, status: document.getElementById('m-status').value };
-        try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }); alert("Reaction Saved Officially."); location.reload(); } catch(e) { alert("Error."); }
+        try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }); alert("Decision Archived."); location.reload(); } catch(e) { alert("Error."); }
     }
 
-    function printReport() {
-        document.getElementById('print-timestamp').innerText = new Date().toLocaleString();
-        window.print();
-    }
-
+    function printReport() { document.getElementById('print-timestamp').innerText = new Date().toLocaleString(); window.print(); }
     function updateSubtypes() {
         const cat = document.getElementById('f-category').value, typeSelect = document.getElementById('f-type');
         typeSelect.innerHTML = '<option value="">Select Specific Type...</option>';
@@ -491,18 +477,16 @@
         else { typeSelect.disabled = true; }
     }
 
-    function promptCQI() { document.getElementById('auth-error').classList.add('hidden'); promptAuth("Audit Verification", "Enter CQI Master access key.", (val) => { if (val.trim() === CQI_PASS) { isAuditMode = true; closeAuth(); showSection('cqi'); } else { document.getElementById('auth-error').classList.remove('hidden'); } }); }
+    function promptCQI() { document.getElementById('auth-error').classList.add('hidden'); promptAuth("Audit Verification", "Enter CQI Master Key.", (val) => { if (val.trim() === CQI_PASS) { isAuditMode = true; closeAuth(); showSection('cqi'); } else { document.getElementById('auth-error').classList.remove('hidden'); } }); }
     function promptAuth(title, desc, callback) { const m = document.getElementById('modal-auth'); m.classList.remove('hidden'); document.getElementById('auth-title').innerText = title; document.getElementById('auth-desc').innerText = desc; document.getElementById('auth-input').value = ""; document.getElementById('auth-confirm').onclick = () => callback(document.getElementById('auth-input').value); }
     function closeAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
     function goBack() { if (isAuditMode) showSection('cqi'); else if (isManagerTab) showSection('action'); else showSection('dash'); }
 
     function showSection(id) {
         document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
-        const el = document.getElementById('section-' + id);
-        if (el) el.classList.remove('hidden');
+        const el = document.getElementById('section-' + id); if (el) el.classList.remove('hidden');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const nav = document.getElementById('nav-' + id);
-        if (nav) nav.classList.add('active');
+        const nav = document.getElementById('nav-' + id); if (nav) nav.classList.add('active');
         if(id !== 'view') { isAuditMode = (id === 'cqi'); isManagerTab = (id === 'action'); }
         if(id === 'report') setTimeout(() => setupCanvas('canvas-sig'), 300);
         if(id === 'dash' || id === 'action') fetchData();
@@ -525,9 +509,8 @@
     function clearCanvas(id) { if (sigPads[id]) sigPads[id].ctx.clearRect(0, 0, sigPads[id].canvas.width, sigPads[id].canvas.height); }
 
     function updateCharts() {
-        const dCtxEl = document.getElementById('chart-depts');
-        const sCtxEl = document.getElementById('chart-severity');
-        if (!dCtxEl || !sCtxEl) return;
+        const dCtxEl = document.getElementById('chart-depts'), sCtxEl = document.getElementById('chart-severity');
+        if (!dCtxEl || !sCtxEl || !reports.length) return;
         if (deptChart) deptChart.destroy(); if (sevChart) sevChart.destroy();
         const depts = {}; reports.forEach(r => depts[r.Departments] = (depts[r.Departments] || 0) + 1);
         const sevs = { Low: 0, Medium: 0, High: 0, Sentinel: 0 }; reports.forEach(r => { if (sevs.hasOwnProperty(r.Severity)) sevs[r.Severity]++; });
